@@ -3,6 +3,8 @@ package com.antonfagerberg.javanton.cache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Random;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -145,5 +147,31 @@ public class ItemLimitedCacheTest {
         assertEquals(1, i[0]);
         assertEquals("A", cache.getOrCompute("A", computeA));
         assertEquals(1, i[0]);
+    }
+
+    @Test
+    void random() {
+        cache = new ItemLimitedCache<>(10);
+        var random = new Random();
+        for (var i = 0; i < 10__000; i++) {
+            for (var j = 0; j < 1000; j++) {
+                if (random.nextInt(10) >= 8) {
+                    cache.getOrCompute(String.valueOf(random.nextInt(10)), () -> UUID.randomUUID().toString());
+                } else {
+                    cache.get(String.valueOf(random.nextInt(10)));
+                }
+
+                if (random.nextInt(10) == 0) {
+                    cache.remove(String.valueOf(random.nextInt(10)));
+                }
+            }
+
+            cache.put(String.valueOf(random.nextInt(10)), UUID.randomUUID().toString());
+
+            if (random.nextInt(10) > 5) {
+                cache.remove(String.valueOf(random.nextInt(10)));
+            }
+        }
+        cache.get("0");
     }
 }
