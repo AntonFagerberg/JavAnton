@@ -14,7 +14,7 @@ It is not thread safe and not by any means thoroughly tested.
 
 ```java
 // New cache that can hold 3 items
-var cache = new ItemLimitedCache<>(3);
+ItemLimitedCache<String, String> cache = new ItemLimitedCache<>(3);
 
 cache.put("A", "A");
 cache.put("B", "B");
